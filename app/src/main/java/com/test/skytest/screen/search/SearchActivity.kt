@@ -60,7 +60,7 @@ class SearchActivity : BaseMvpActivity(), SearchView {
 
 
     override fun showProgress(show: Boolean) {
-
+        wordAdapter.showProgress(show)
     }
 
     override fun showSearchResults(words: List<Word>) {

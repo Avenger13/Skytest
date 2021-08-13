@@ -1,5 +1,6 @@
 package com.test.skytest.screen.search
 
+import android.util.Log
 import com.test.skytest.data.network.api.search.response.Word
 import com.test.skytest.data.repository.WordsRepository
 import com.test.skytest.presentation.BasePresenter
@@ -14,15 +15,16 @@ class SearchPresenter @Inject constructor(
 
     private val searchSubject = PublishSubject.create<String?>()
 
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
         searchSubject.debounce(500, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .switchMapSingle { wordsRepository.search(it).wrapByNotification() }
-            .ioToMain()
-            .doOnSubscribe { viewState.showProgress(true) }
-            .doAfterTerminate { viewState.showProgress(false) }
+            .observeOnMain()
+            .doOnNext { viewState.showProgress(true) }
+            .switchMapSingle { wordsRepository.search(it).wrapByNotification().ioToMain() }
+            .doOnEnd { viewState.showProgress(false) }
             .subscribe {
                 when {
                     it.isOnNext -> {
@@ -37,7 +39,7 @@ class SearchPresenter @Inject constructor(
     }
 
     fun onSearch(query: String?) {
-        if (query !=null)
+        if (query != null)
             searchSubject.onNext(query)
         else
             viewState.showSearchResults(emptyList())
