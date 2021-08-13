@@ -8,5 +8,6 @@ Dagger2
 
 Network:
 OkHttp3
-Retrofit
+Retrofit2
 Picasso
+RxJava2
