@@ -25,7 +25,7 @@ open class BasePresenter<V : BaseView> : MvpPresenter<V>() {
     protected fun <T> Observable<T>.ioToMain(): Observable<T> = subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
 
-    protected fun <T> Observable<T>.doOnEnd(action: () -> Unit): Observable<T> =
+    protected fun <T> Observable<T>.doOnAny(action: () -> Unit): Observable<T> =
         doOnEach { action() }.doOnError { action() }
 
     protected fun <T> Observable<T>.observeOnMain(): Observable<T> =
