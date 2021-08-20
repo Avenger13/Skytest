@@ -7,8 +7,8 @@ import dagger.assisted.AssistedInject
 
 
 class MeaningPresenter @AssistedInject constructor(
-    @Assisted("meaningId")
-    private val meaningId: LongArray,
+    @Assisted("meaningIds")
+    private val meaningIds: LongArray,
     private val wordsRepository: WordsRepository
 ) : BasePresenter<MeaningView>() {
 
@@ -16,7 +16,7 @@ class MeaningPresenter @AssistedInject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        wordsRepository.meanings(*meaningId)
+        wordsRepository.meanings(*meaningIds)
             .ioToMain()
             .subscribe(
                 { viewState.showMeanings(it) },

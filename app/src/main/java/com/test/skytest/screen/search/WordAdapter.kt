@@ -2,17 +2,18 @@ package com.test.skytest.screen.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import com.test.skytest.appComponent
 import com.test.skytest.data.network.api.search.response.Word
 import com.test.skytest.databinding.ItemProgressListBinding
 import com.test.skytest.databinding.ItemSearchListBinding
 
 
-class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) -> Unit) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val words: MutableList<Word> = mutableListOf()
+class WordAdapter(private val onWordClick: (Word) -> Unit) :
+    ListAdapter<Word, RecyclerView.ViewHolder>(WordDiffCallback) {
 
     private companion object {
         const val TYPE_WORD = 0
@@ -20,20 +21,9 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
         val PROGRESS_WORD = Word(-1, "", emptyList())
     }
 
-    fun setWords(data: List<Word>) {
-        words.clear()
-        words.addAll(data)
-        notifyDataSetChanged()
-    }
-
-
-    override fun getItemCount(): Int {
-        return words.size
-    }
-
 
     override fun getItemViewType(position: Int): Int {
-        return when (words[position]) {
+        return when (getItem(position)) {
             PROGRESS_WORD -> TYPE_PROGRESS
             else -> TYPE_WORD
         }
@@ -46,7 +36,6 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
             TYPE_WORD -> {
                 WordVH(
                     ItemSearchListBinding.inflate(inflater, parent, false),
-                    picasso,
                     onWordClick
                 )
             }
@@ -59,7 +48,7 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WordVH -> {
-                holder.bind(words[position])
+                holder.bind(getItem(position))
             }
         }
 
@@ -68,14 +57,12 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
     fun showProgress(show: Boolean) {
         when (show) {
             true -> {
-                words.add(PROGRESS_WORD)
-                notifyItemInserted(words.size - 1)
+                submitList(currentList+PROGRESS_WORD)
             }
 
             false -> {
-                if (words.isNotEmpty()) {
-                    words.removeLast()
-                    notifyItemRemoved(words.size - 1)
+                if (currentList.isNotEmpty() && currentList.last() == PROGRESS_WORD) {
+                    submitList(currentList.dropLast(1))
                 }
             }
         }
@@ -83,7 +70,6 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
 
     class WordVH(
         private val binding: ItemSearchListBinding,
-        private val picasso: Picasso,
         private val onWordClick: (Word) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -94,11 +80,16 @@ class WordAdapter(private val picasso: Picasso, private val onWordClick: (Word) 
             val imageUrl =
                 "https://" + word.meanings.firstOrNull()?.previewUrl?.takeIf { it.length > 2 }
                     ?.substring(2)
-            picasso.load(imageUrl)
+            itemView.context.appComponent.picasso.load(imageUrl)
                 .into(binding.image)
 
         }
     }
 
     class ProgressVH(binding: ItemProgressListBinding) : RecyclerView.ViewHolder(binding.root)
+
+    object WordDiffCallback : DiffUtil.ItemCallback<Word>() {
+        override fun areItemsTheSame(oldItem: Word, newItem: Word) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Word, newItem: Word) = oldItem == newItem
+    }
 }

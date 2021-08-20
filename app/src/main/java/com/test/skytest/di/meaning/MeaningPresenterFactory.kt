@@ -6,5 +6,5 @@ import dagger.assisted.AssistedFactory
 
 @AssistedFactory
 interface MeaningPresenterFactory {
-    fun create(@Assisted("meaningId") meaningIds: LongArray): MeaningPresenter
+    fun create(@Assisted("meaningIds") meaningIds: LongArray): MeaningPresenter
 }

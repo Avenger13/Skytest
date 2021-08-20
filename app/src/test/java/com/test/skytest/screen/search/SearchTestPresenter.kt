@@ -72,7 +72,6 @@ class SearchTestPresenter {
     fun clickOnWord_showsMeaningsScreen() {
 
         presenter.onWordClick(word)
-
         Mockito.verify(view).showMeanings(longArrayOf(1, 2))
     }
 

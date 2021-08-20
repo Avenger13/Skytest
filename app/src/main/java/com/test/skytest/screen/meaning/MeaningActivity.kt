@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.squareup.picasso.Picasso
 import com.test.skytest.appComponent
 import com.test.skytest.data.network.api.search.response.MeaningFull
 import com.test.skytest.databinding.ActivityMeaningBinding
@@ -22,10 +21,10 @@ class MeaningActivity : BaseMvpActivity(), MeaningView {
     private val presenter by moxyPresenter { meaningPresenterFactory.create(meaningIds) }
 
     private val meaningIds: LongArray
-        get() = intent.getLongArrayExtra(KEY_MEANING_ID) ?: longArrayOf()
+        get() = intent.getLongArrayExtra(KEY_MEANING_IDS) ?: longArrayOf()
 
     private lateinit var binding: ActivityMeaningBinding
-    private lateinit var meaningAdapter: MeaningAdapter
+    private val meaningAdapter = MeaningAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         appComponent.inject(this)
@@ -35,11 +34,7 @@ class MeaningActivity : BaseMvpActivity(), MeaningView {
 
         with(binding.meanings) {
             adapter = meaningAdapter
-            layoutManager = LinearLayoutManager(
-                this@MeaningActivity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            layoutManager = LinearLayoutManager(this@MeaningActivity)
             addItemDecoration(
                 DividerItemDecoration(
                     this@MeaningActivity,
@@ -49,19 +44,16 @@ class MeaningActivity : BaseMvpActivity(), MeaningView {
         }
     }
 
-    @Inject
-    fun createAdapter(picasso: Picasso) {
-        meaningAdapter = MeaningAdapter(picasso)
-    }
+
 
     override fun showMeanings(meanings: List<MeaningFull>) {
-        meaningAdapter.setMeanings(meanings)
+        meaningAdapter.submitList(meanings)
     }
 
     companion object {
-        private const val KEY_MEANING_ID = "MEANING_ID"
+        private const val KEY_MEANING_IDS = "MEANING_IDS"
         fun create(context: Context, meaningId: LongArray) =
             Intent(context, MeaningActivity::class.java)
-                .putExtra(KEY_MEANING_ID, meaningId)
+                .putExtra(KEY_MEANING_IDS, meaningId)
     }
 }

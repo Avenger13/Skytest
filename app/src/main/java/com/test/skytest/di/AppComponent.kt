@@ -1,6 +1,7 @@
 package com.test.skytest.di
 
 import android.content.Context
+import com.squareup.picasso.Picasso
 import com.test.skytest.di.data.network.NetworkModule
 import com.test.skytest.screen.meaning.MeaningActivity
 import com.test.skytest.screen.search.SearchActivity
@@ -13,6 +14,8 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(searchActivity: SearchActivity)
     fun inject(meaningActivity: MeaningActivity)
+
+    val picasso: Picasso
 
     @Component.Factory
     interface Factory {

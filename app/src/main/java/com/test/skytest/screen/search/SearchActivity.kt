@@ -23,18 +23,14 @@ class SearchActivity : BaseMvpActivity(), SearchView {
     private lateinit var binding: ActivitySearchBinding
     private lateinit var wordAdapter: WordAdapter
 
-    @Inject
-    lateinit var picasso: Picasso
 
     override fun onCreate(savedInstanceState: Bundle?) {
         appComponent.inject(this)
         super.onCreate(savedInstanceState)
-
-        wordAdapter = WordAdapter(picasso, presenter::onWordClick)
-
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        wordAdapter = WordAdapter(presenter::onWordClick)
 
         binding.search.addTextChangedListener(
             afterTextChanged = { presenter.onSearch(it?.toString()) }
@@ -42,11 +38,7 @@ class SearchActivity : BaseMvpActivity(), SearchView {
 
         with(binding.words) {
             adapter = wordAdapter
-            layoutManager = LinearLayoutManager(
-                this@SearchActivity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(
                 DividerItemDecoration(
                     this@SearchActivity,
@@ -64,7 +56,7 @@ class SearchActivity : BaseMvpActivity(), SearchView {
     }
 
     override fun showSearchResults(words: List<Word>) {
-        wordAdapter.setWords(words)
+        wordAdapter.submitList(words)
     }
 
     override fun showMeanings(ids: LongArray) {
