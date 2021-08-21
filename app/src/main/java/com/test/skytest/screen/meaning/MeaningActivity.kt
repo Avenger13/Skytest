@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.test.skytest.appComponent
 import com.test.skytest.data.network.api.search.response.MeaningFull
-import com.test.skytest.databinding.ActivityMeaningBinding
+import com.test.skytest.databinding.FragmentMeaningBinding
 import com.test.skytest.di.meaning.MeaningPresenterFactory
 import com.test.skytest.presentation.BaseMvpActivity
 import moxy.ktx.moxyPresenter
@@ -23,13 +23,13 @@ class MeaningActivity : BaseMvpActivity(), MeaningView {
     private val meaningIds: LongArray
         get() = intent.getLongArrayExtra(KEY_MEANING_IDS) ?: longArrayOf()
 
-    private lateinit var binding: ActivityMeaningBinding
+    private lateinit var binding: FragmentMeaningBinding
     private val meaningAdapter = MeaningAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         appComponent.inject(this)
         super.onCreate(savedInstanceState)
-        binding = ActivityMeaningBinding.inflate(layoutInflater)
+        binding = FragmentMeaningBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         with(binding.meanings) {

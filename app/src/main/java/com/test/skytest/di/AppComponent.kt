@@ -4,7 +4,7 @@ import android.content.Context
 import com.squareup.picasso.Picasso
 import com.test.skytest.di.data.network.NetworkModule
 import com.test.skytest.screen.meaning.MeaningActivity
-import com.test.skytest.screen.search.SearchActivity
+import com.test.skytest.screen.search.SearchFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Component(modules = [NetworkModule::class])
 @Singleton
 interface AppComponent {
-    fun inject(searchActivity: SearchActivity)
+    fun inject(searchFragment: SearchFragment)
     fun inject(meaningActivity: MeaningActivity)
 
     val picasso: Picasso

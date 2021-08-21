@@ -1,53 +1,53 @@
 package com.test.skytest.screen.search
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.squareup.picasso.Picasso
-import com.test.skytest.appComponent
+import com.test.skytest.R
 import com.test.skytest.data.network.api.search.response.Word
-import com.test.skytest.databinding.ActivitySearchBinding
-import com.test.skytest.presentation.BaseMvpActivity
+import com.test.skytest.databinding.FragmentSearchBinding
+import com.test.skytest.presentation.BaseMvpFragment
 import com.test.skytest.screen.meaning.MeaningActivity
 import moxy.ktx.moxyPresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchActivity : BaseMvpActivity(), SearchView {
+class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
 
     @Inject
     lateinit var presenterProvider: Provider<SearchPresenter>
     private val presenter by moxyPresenter { presenterProvider.get() }
 
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var binding: FragmentSearchBinding
     private lateinit var wordAdapter: WordAdapter
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onAttach(context: Context) {
         appComponent.inject(this)
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        super.onAttach(context)
+    }
 
-        wordAdapter = WordAdapter(presenter::onWordClick)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentSearchBinding.bind(view)
         binding.search.addTextChangedListener(
             afterTextChanged = { presenter.onSearch(it?.toString()) }
         )
 
+        wordAdapter = WordAdapter(presenter::onWordClick)
         with(binding.words) {
             adapter = wordAdapter
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
                 DividerItemDecoration(
-                    this@SearchActivity,
+                    requireContext(),
                     DividerItemDecoration.VERTICAL
                 )
             )
 
         }
-
     }
 
 
@@ -60,6 +60,6 @@ class SearchActivity : BaseMvpActivity(), SearchView {
     }
 
     override fun showMeanings(ids: LongArray) {
-        startActivity(MeaningActivity.create(this, ids))
+        startActivity(MeaningActivity.create(requireContext(), ids))
     }
 }

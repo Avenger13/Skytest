@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Skytest">
         <activity
-            android:name=".screen.search.SearchActivity"
+            android:name=".screen.MainActivity"
             android:label="@string/search_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
