@@ -4,13 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.test.skytest.R
 import com.test.skytest.data.network.api.search.response.Word
 import com.test.skytest.databinding.FragmentSearchBinding
 import com.test.skytest.presentation.BaseMvpFragment
-import com.test.skytest.screen.meaning.MeaningActivity
 import moxy.ktx.moxyPresenter
 import javax.inject.Inject
 import javax.inject.Provider
@@ -21,8 +22,8 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
     lateinit var presenterProvider: Provider<SearchPresenter>
     private val presenter by moxyPresenter { presenterProvider.get() }
 
-    private lateinit var binding: FragmentSearchBinding
-    private lateinit var wordAdapter: WordAdapter
+    private val binding by viewBinding(FragmentSearchBinding::bind)
+    private var wordAdapter: WordAdapter? = null
 
     override fun onAttach(context: Context) {
         appComponent.inject(this)
@@ -31,7 +32,6 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSearchBinding.bind(view)
         binding.search.addTextChangedListener(
             afterTextChanged = { presenter.onSearch(it?.toString()) }
         )
@@ -50,16 +50,22 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        wordAdapter = null
+    }
 
     override fun showProgress(show: Boolean) {
-        wordAdapter.showProgress(show)
+        wordAdapter?.showProgress(show)
     }
 
     override fun showSearchResults(words: List<Word>) {
-        wordAdapter.submitList(words)
+        wordAdapter?.submitList(words)
     }
 
     override fun showMeanings(ids: LongArray) {
-        startActivity(MeaningActivity.create(requireContext(), ids))
+        val action = SearchFragmentDirections.actionSearchFragmentToMeaningActivity(ids)
+        findNavController().navigate(action)
     }
+
 }
