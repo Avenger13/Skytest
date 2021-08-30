@@ -2,5 +2,6 @@
     <string name="app_name">Skytest</string>
     <string name="search_title">Поиск слов</string>
     <string name="meaning_title">Значения</string>
+    <string name="retry">ПОВТОРИТЬ</string>
 
 </resources>

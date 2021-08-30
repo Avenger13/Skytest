@@ -2,18 +2,17 @@ package com.test.skytest.screen.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import com.test.skytest.appComponent
 import com.test.skytest.data.network.api.search.response.Word
-import com.test.skytest.databinding.ItemProgressListBinding
+import com.test.skytest.databinding.ItemLoadStateBinding
 import com.test.skytest.databinding.ItemSearchListBinding
 
 
 class WordAdapter(private val onWordClick: (Word) -> Unit) :
-    ListAdapter<Word, RecyclerView.ViewHolder>(WordDiffCallback) {
+    PagingDataAdapter<Word, RecyclerView.ViewHolder>(WordDiffCallback) {
 
     private companion object {
         const val TYPE_WORD = 0
@@ -40,7 +39,7 @@ class WordAdapter(private val onWordClick: (Word) -> Unit) :
                 )
             }
             else -> {
-                ProgressVH(ItemProgressListBinding.inflate(inflater, parent, false))
+                ProgressVH(ItemLoadStateBinding.inflate(inflater, parent, false))
             }
         }
     }
@@ -48,24 +47,24 @@ class WordAdapter(private val onWordClick: (Word) -> Unit) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WordVH -> {
-                holder.bind(getItem(position))
+                getItem(position)?.let { holder.bind(it) }
             }
         }
 
     }
 
     fun showProgress(show: Boolean) {
-        when (show) {
-            true -> {
-                submitList(currentList+PROGRESS_WORD)
-            }
-
-            false -> {
-                if (currentList.isNotEmpty() && currentList.last() == PROGRESS_WORD) {
-                    submitList(currentList.dropLast(1))
-                }
-            }
-        }
+//        when (show) {
+//            true -> {
+//                    submitList(currentList+PROGRESS_WORD)
+//            }
+//
+//            false -> {
+//                if (currentList.isNotEmpty() && currentList.last() == PROGRESS_WORD) {
+//                    submitList(currentList.dropLast(1))
+//                }
+//            }
+//        }
     }
 
     class WordVH(
@@ -86,7 +85,7 @@ class WordAdapter(private val onWordClick: (Word) -> Unit) :
         }
     }
 
-    class ProgressVH(binding: ItemProgressListBinding) : RecyclerView.ViewHolder(binding.root)
+    class ProgressVH(binding: ItemLoadStateBinding) : RecyclerView.ViewHolder(binding.root)
 
     object WordDiffCallback : DiffUtil.ItemCallback<Word>() {
         override fun areItemsTheSame(oldItem: Word, newItem: Word) = oldItem.id == newItem.id
