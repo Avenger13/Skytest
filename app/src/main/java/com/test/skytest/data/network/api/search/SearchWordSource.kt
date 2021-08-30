@@ -34,7 +34,7 @@ class SearchWordSource(
 
         return wordsRepository.search(query, page, pageSize)
             .subscribeOn(Schedulers.io())
-            .map {
+            .map<LoadResult<Int, Word>> {
                 val prevKey = if (page == FIRST_KEY) null else page - 1
                 val nextKey = if (it.size < pageSize) null else page + 1
                 LoadResult.Page(
@@ -43,5 +43,6 @@ class SearchWordSource(
                     nextKey = nextKey
                 )
             }
+            .onErrorReturn { LoadResult.Error(it) }
     }
 }

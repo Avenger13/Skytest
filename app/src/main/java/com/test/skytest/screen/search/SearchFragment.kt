@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -44,24 +45,22 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
         )
 
 
-        wordAdapter = WordAdapter(presenter::onWordClick).also {
-            viewLifecycleOwner.lifecycleScope.launch {
-                it.loadStateFlow.collectLatest { states: CombinedLoadStates ->
-                    binding.progress.isVisible = states.refresh == LoadState.Loading
-                    binding.words.isVisible = states.refresh != LoadState.Loading
-                }
-            }
+        wordAdapter = WordAdapter(presenter::onWordClick)
+        wordAdapter!!.addLoadStateListener { states: CombinedLoadStates ->
+            binding.progress.isVisible = states.refresh == LoadState.Loading
+            binding.words.isVisible = states.refresh != LoadState.Loading
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            presenter.words.collectLatest {
+            presenter.words.cachedIn(this).collectLatest {
                 wordAdapter?.submitData(it)
             }
+
         }
 
         with(binding.words) {
             adapter = wordAdapter!!
-                .withLoadStateHeader(WordLoadStateAdapter(presenter::onRetry))
+                .withLoadStateFooter(WordLoadStateAdapter(presenter::onRetry))
 
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(

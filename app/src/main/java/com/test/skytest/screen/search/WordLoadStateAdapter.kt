@@ -18,7 +18,7 @@ class WordLoadStateAdapter(val onRetry: () -> Unit) :
 
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState) =
-        WordLoadStateVH(ItemLoadStateBinding.inflate(LayoutInflater.from(parent.context)))
+        WordLoadStateVH(ItemLoadStateBinding.inflate(LayoutInflater.from(parent.context),parent,false))
 
 
     inner class WordLoadStateVH(private val binding: ItemLoadStateBinding) :
