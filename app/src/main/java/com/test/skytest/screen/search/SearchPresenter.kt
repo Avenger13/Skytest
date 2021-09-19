@@ -22,7 +22,7 @@ class SearchPresenter @Inject constructor(
     private var query: String? = null
     private val searchSubject = PublishSubject.create<String?>()
 
-    val words: Flow<PagingData<Word>> = Pager(PagingConfig(10)) {
+    val words: Flow<PagingData<Word>> = Pager(PagingConfig(10,enablePlaceholders = true)) {
         SearchWordSource(wordsRepository, query)
     }.flow
 
