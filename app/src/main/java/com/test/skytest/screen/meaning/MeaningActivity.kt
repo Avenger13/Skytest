@@ -5,8 +5,8 @@ import androidx.navigation.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.test.skytest.App
 import com.test.skytest.R
-import com.test.skytest.appComponent
 import com.test.skytest.data.network.api.search.response.MeaningFull
 import com.test.skytest.databinding.FragmentMeaningBinding
 import com.test.skytest.di.meaning.MeaningPresenterFactory
@@ -28,7 +28,7 @@ class MeaningActivity : BaseMvpActivity(R.layout.fragment_meaning), MeaningView 
     private val meaningAdapter = MeaningAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        appComponent.inject(this)
+        App.appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
         with(binding.meanings) {

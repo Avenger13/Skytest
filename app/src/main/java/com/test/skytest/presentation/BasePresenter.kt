@@ -1,18 +1,23 @@
 package com.test.skytest.presentation
 
+import com.test.skytest.App
+import com.test.skytest.R
+import com.test.skytest.domain.Result
+import com.test.skytest.domain.error.ErrorEntity
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 
 
 open class BasePresenter<V : BaseView> : MvpPresenter<V>() {
-
     protected val disposables = CompositeDisposable()
+    protected val resource: Resource<Int> = App.appComponent.resource
 
     override fun onDestroy() {
         disposables.clear()
@@ -39,4 +44,32 @@ open class BasePresenter<V : BaseView> : MvpPresenter<V>() {
             if (next == null) Notification.createOnComplete<T>()
             else Notification.createOnNext(next)
         }.onErrorReturn { error -> Notification.createOnError(error) }
+
+    /**
+     * <p>Subscribe to successful result of {@link io.reactivex.Single Single}
+     *
+     */
+    protected fun <T> Single<Result<T>>.onSuccess(onSuccess: (T) -> Unit): Disposable {
+        return subscribe(Consumer {
+            when (it) {
+                is Result.Success -> onSuccess.invoke(it.data)
+                is Result.Error -> {
+                    when (it.error) {
+                        ErrorEntity.NoConnection -> {
+                            viewState.showError(resource.getString(R.string.error_no_connection))
+                        }
+                        // TODO (add different error msgs)
+                        ErrorEntity.NotFound -> {
+                            viewState.showError(resource.getString(R.string.error_no_connection))
+                        }
+                        ErrorEntity.Unknown -> {
+                            viewState.showError(resource.getString(R.string.error_no_connection))
+                        }
+                    }
+                }
+            }
+        }
+        )
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.test.skytest.screen.meaning
 
-import com.test.skytest.data.repository.WordsRepository
+import com.test.skytest.data.network.api.search.response.MeaningFull
+import com.test.skytest.domain.interactor.WordMeaningsInteractor
 import com.test.skytest.presentation.BasePresenter
+import com.test.skytest.presentation.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -9,19 +11,19 @@ import dagger.assisted.AssistedInject
 class MeaningPresenter @AssistedInject constructor(
     @Assisted("meaningIds")
     private val meaningIds: LongArray,
-    private val wordsRepository: WordsRepository
+    private val wordMeaningsInteractor:WordMeaningsInteractor
 ) : BasePresenter<MeaningView>() {
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        wordsRepository.meanings(*meaningIds)
+        wordMeaningsInteractor.meanings(*meaningIds)
             .ioToMain()
-            .subscribe(
-                { viewState.showMeanings(it) },
-                { viewState.showError(it.message ?: "") }
-            ).autoDispose()
+            .onSuccess (::showMeanings)
+            .autoDispose()
+    }
 
+    private fun showMeanings(it: List<MeaningFull>) {
+        viewState.showMeanings(it)
     }
 }

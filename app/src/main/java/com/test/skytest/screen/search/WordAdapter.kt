@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.test.skytest.appComponent
+import com.test.skytest.App
 import com.test.skytest.data.network.api.search.response.Word
 import com.test.skytest.databinding.ItemSearchListBinding
 
@@ -42,7 +42,7 @@ class WordAdapter(private val onWordClick: (Word) -> Unit) :
                 val imageUrl =
                     "https://" + word.meanings.firstOrNull()?.previewUrl?.takeIf { it.length > 2 }
                         ?.substring(2)
-                itemView.context.appComponent.picasso.load(imageUrl)
+                App.appComponent.picasso.load(imageUrl)
                     .into(binding.image)
             }
         }

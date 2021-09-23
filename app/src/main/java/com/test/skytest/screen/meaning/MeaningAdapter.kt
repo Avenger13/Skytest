@@ -2,12 +2,10 @@ package com.test.skytest.screen.meaning
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
-import com.test.skytest.appComponent
+import com.test.skytest.App
 import com.test.skytest.data.network.api.search.response.MeaningFull
 import com.test.skytest.databinding.ItemMeaningListBinding
 
@@ -37,7 +35,7 @@ class MeaningAdapter :
                 "https://" + meaning.images.firstOrNull()?.url?.takeIf { it.length > 2 }
                     ?.substring(2)
 
-            itemView.context.appComponent.picasso.load(imageUrl)
+            App.appComponent.picasso.load(imageUrl)
                 .into(binding.image)
         }
     }

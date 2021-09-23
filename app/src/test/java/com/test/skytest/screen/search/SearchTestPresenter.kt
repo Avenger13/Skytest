@@ -3,7 +3,7 @@ package com.test.skytest.screen.search
 import com.test.skytest.data.network.api.search.response.Meaning
 import com.test.skytest.data.network.api.search.response.Translation
 import com.test.skytest.data.network.api.search.response.Word
-import com.test.skytest.data.repository.WordsRepository
+import com.test.skytest.data.repository.WordsRepositoryImpl
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -24,7 +24,7 @@ class SearchTestPresenter {
     private lateinit var view: SearchView
 
     @Mock
-    private lateinit var wordsRepository: WordsRepository
+    private lateinit var wordsRepository: WordsRepositoryImpl
     private val scheduler = TestScheduler()
     private lateinit var presenter: SearchPresenter
     val word = Word(

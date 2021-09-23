@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.test.skytest.data.network.api.search.SearchWordSource
 import com.test.skytest.data.network.api.search.response.Word
-import com.test.skytest.data.repository.WordsRepository
+import com.test.skytest.domain.repository.WordsRepository
 import com.test.skytest.presentation.BasePresenter
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
