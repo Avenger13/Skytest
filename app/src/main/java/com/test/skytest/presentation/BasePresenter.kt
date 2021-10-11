@@ -1,9 +1,8 @@
 package com.test.skytest.presentation
 
 import com.test.skytest.App
-import com.test.skytest.R
 import com.test.skytest.domain.Result
-import com.test.skytest.domain.error.ErrorEntity
+import com.test.skytest.presentation.error.MvpErrorPresenter
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -18,6 +17,7 @@ import moxy.MvpPresenter
 open class BasePresenter<V : BaseView> : MvpPresenter<V>() {
     protected val disposables = CompositeDisposable()
     protected val resource: Resource<Int> = App.appComponent.resource
+    protected val errorPresenter: MvpErrorPresenter<V> = MvpErrorPresenter(viewState, resource)
 
     override fun onDestroy() {
         disposables.clear()
@@ -53,23 +53,9 @@ open class BasePresenter<V : BaseView> : MvpPresenter<V>() {
         return subscribe(Consumer {
             when (it) {
                 is Result.Success -> onSuccess.invoke(it.data)
-                is Result.Error -> {
-                    when (it.error) {
-                        ErrorEntity.NoConnection -> {
-                            viewState.showError(resource.getString(R.string.error_no_connection))
-                        }
-                        // TODO (add different error msgs)
-                        ErrorEntity.NotFound -> {
-                            viewState.showError(resource.getString(R.string.error_no_connection))
-                        }
-                        ErrorEntity.Unknown -> {
-                            viewState.showError(resource.getString(R.string.error_no_connection))
-                        }
-                    }
-                }
+                is Result.Error -> errorPresenter.resolve(it.error)
             }
-        }
-        )
+        })
     }
 
 }
