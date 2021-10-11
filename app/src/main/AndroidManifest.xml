@@ -22,9 +22,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".screen.meaning.MeaningActivity"
-            android:label="@string/meaning_title" />
     </application>
 
 </manifest>

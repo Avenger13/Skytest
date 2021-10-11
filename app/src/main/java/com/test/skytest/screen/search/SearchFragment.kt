@@ -11,7 +11,6 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.cachedIn
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.test.skytest.R
 import com.test.skytest.databinding.FragmentSearchBinding
@@ -55,14 +54,12 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
             presenter.words.cachedIn(this).collectLatest {
                 wordAdapter?.submitData(it)
             }
-
         }
 
         with(binding.words) {
             adapter = wordAdapter!!
                 .withLoadStateFooter(WordLoadStateAdapter(presenter::onRetry))
 
-            layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(
                 DividerItemDecoration(
                     requireContext(),
@@ -74,11 +71,10 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         wordAdapter = null
     }
-
 
     override fun refresh() {
         wordAdapter?.refresh()
@@ -90,7 +86,7 @@ class SearchFragment : BaseMvpFragment(R.layout.fragment_search), SearchView {
 
 
     override fun showMeanings(ids: LongArray) {
-        val action = SearchFragmentDirections.actionSearchFragmentToMeaningActivity(ids)
+        val action = SearchFragmentDirections.actionSearchFragmentToMeaningFragment(ids)
         findNavController().navigate(action)
     }
 

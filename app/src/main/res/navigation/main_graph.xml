@@ -5,26 +5,31 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/searchFragment">
 
-    <activity
-        android:id="@+id/meaningActivity"
-        android:name="com.test.skytest.screen.meaning.MeaningActivity"
-        android:label="MeaningActivity">
+    <fragment
+        android:id="@+id/meaningFragment"
+        android:name="com.test.skytest.screen.meaning.MeaningFragment"
+        android:label="fragment_meaning"
+        tools:layout="@layout/fragment_meaning">
 
         <argument
             android:name="meaningIds"
             app:argType="long[]" />
-    </activity>
+    </fragment>
+
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.test.skytest.screen.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/action_searchFragment_to_meaningActivity"
-            app:destination="@id/meaningActivity">
+            android:id="@+id/action_searchFragment_to_meaningFragment"
+            app:destination="@id/meaningFragment">
             <argument
                 android:name="meaningIds"
                 app:argType="long[]" />
         </action>
     </fragment>
+
+
 </navigation>
