@@ -5,7 +5,6 @@ import androidx.paging.rxjava2.RxPagingSource
 import com.test.skytest.data.network.api.search.response.Word
 import com.test.skytest.data.repository.WordsRepositoryImpl
 import com.test.skytest.domain.repository.WordsRepository
-import com.test.skytest.presentation.error.RxOldErrorHandler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
@@ -36,7 +35,6 @@ class SearchWordSource(
 
         return wordsRepository.search(query, page, pageSize)
             .subscribeOn(Schedulers.io())
-            .doOnError(RxOldErrorHandler())
             .map<LoadResult<Int, Word>> {
                 val prevKey = if (page == FIRST_KEY) null else page - 1
                 val nextKey = if (it.size < pageSize) null else page + 1
