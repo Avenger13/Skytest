@@ -50,6 +50,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
     implementation "androidx.paging:paging-runtime-ktx:3.0.1"
     implementation "androidx.paging:paging-rxjava2-ktx:3.0.1"
+    implementation "lifecycle:lifecycle-runtime-ktx:2.4.0-rc01"
 
     //test
     testImplementation "junit:junit:4.13.2"
